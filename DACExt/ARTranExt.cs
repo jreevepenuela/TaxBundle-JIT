@@ -36,6 +36,30 @@ namespace CloudianGlobal
         public string UsrTaxAmount { get; set; }
         public abstract class usrTaxAmount : PX.Data.BQL.BqlString.Field<usrTaxAmount> { }
         #endregion
+
+        #region UsrAmtPrint
+        [PXDBString]
+        [PXUIField(DisplayName = "Amount (For Print-out)")]
+
+        public  string UsrAmtPrint { get; set; }
+        public abstract class usrAmtPrint : PX.Data.BQL.BqlString.Field<usrAmtPrint> { }
+        #endregion
+
+        #region UsrUOMPrint
+        [PXDBString]
+        [PXUIField(DisplayName = "UOM (For Print-out)")]
+
+        public  string UsrUOMPrint { get; set; }
+        public abstract class usrUOMPrint : PX.Data.BQL.BqlString.Field<usrUOMPrint> { }
+        #endregion
+
+        #region UsrQtyPrint
+        [PXDBString]
+        [PXUIField(DisplayName = "Qty (For Print-out)")]
+
+        public string UsrQtyPrint { get; set; }
+        public abstract class usrQtyPrint : PX.Data.BQL.BqlString.Field<usrQtyPrint> { }
+        #endregion
     }
 
 }
