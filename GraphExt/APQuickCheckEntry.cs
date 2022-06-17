@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using PX.Data;
 using PX.Data.DependencyInjection;
+using PX.Data.WorkflowAPI;
 using PX.Objects.Common;
 using PX.Objects.Common.Bql;
 using PX.Objects.Common.Extensions;
 using PX.Objects.GL;
 using PX.Objects.GL.FinPeriods;
-using PX.Objects.CM;
+using PX.Objects.CM.Extensions;
 using PX.Objects.CA;
 using PX.Objects.Common.GraphExtensions.Abstract;
 using PX.Objects.Common.GraphExtensions.Abstract.DAC;
@@ -22,10 +23,12 @@ using PX.Objects.IN;
 using PX.Objects.CS;
 using PX.Objects.PM;
 using PX.Objects.GL.Reclassification.UI;
+using PX.Objects.PO;
 using APQuickCheck = PX.Objects.AP.Standalone.APQuickCheck;
 using AP1099Hist = PX.Objects.AP.Overrides.APDocumentRelease.AP1099Hist;
 using AP1099Yr = PX.Objects.AP.Overrides.APDocumentRelease.AP1099Yr;
 using CRLocation = PX.Objects.CR.Standalone.Location;
+using PX.Objects.Extensions.MultiCurrency.AP;
 using PX.Objects;
 using PX.Objects.AP;
 
@@ -35,46 +38,74 @@ namespace CloudianGlobal
     public class APQuickCheckEntry_Extension : PXGraphExtension<APQuickCheckEntry>
     {
         #region Event Handlers
-        public delegate IEnumerable ReleaseDelegate(PXAdapter adapter);
-        [PXOverride]
-        public IEnumerable Release(PXAdapter adapter, ReleaseDelegate baseMethod)
-        { 
-            foreach (APTran atc in Base.Transactions.Cache.Cached)
+        protected void _(Events.FieldUpdated<APTran, APTran.inventoryID> e)
+        {
+      
+            var row = e.Row;
+            if (row != null)
             {
-                var rowExt = PXCache<APTran>.GetExtension<APTranExt>(atc);
-                if (rowExt.UsrWholdingtaxrate == "N/A" || rowExt.UsrWholdingatc == null)
-                {
-                    PXCache xcache = Base.Transactions.Cache;
-                    xcache.SetValue<APTranExt.usrWholdingatc>(atc, "N/A");
-                    xcache.SetValue<APTranExt.usrWholdingtaxrate>(atc, "0.00");
-                    xcache.SetValue<APTranExt.usrWholdingtaxAmount>(atc, "0.00");
-                    xcache.SetValue<APTranExt.usrWtaxDesc>(atc, "N/A");
-                } 
-
-            }  
-            return baseMethod(adapter);
+                InventoryItem item = PXSelectorAttribute.Select<APTran.inventoryID>(e.Cache, row) as InventoryItem;
+                InventoryItemExt inventoryItemExt = item.GetExtension<InventoryItemExt>();
+                APTranExt aPTranExt = row.GetExtension<APTranExt>();
+                aPTranExt.UsrWholdingatc = inventoryItemExt.UsrWHoldingtax;
+            }
+            e.Cache.SetDefaultExt<APTranExt.usrWholdingtaxrate>(e.Row);
+      
         }
 
-        public delegate void PersistDelegate();
-        [PXOverride]
-        public void Persist(PersistDelegate baseMethod)
+        protected void _(Events.FieldUpdated<APTran, APTranExt.usrWholdingatc> e)
         {
-   
-            foreach (APTran atc in Base.Transactions.Cache.Cached)
+            APTran aPTran = e.Row;
+            withholdingtax withholdingTax = PXSelectorAttribute.
+                Select<APTranExt.usrWholdingatc>(e.Cache, aPTran) as withholdingtax;
+
+            APTranExt aPTranExt = aPTran.GetExtension<APTranExt>();
+            if (aPTranExt.UsrWholdingatc != null)
+                aPTranExt.UsrWholdingtaxrate = withholdingTax.TaxRate;
+
+            e.Cache.SetDefaultExt<APTranExt.usrWholdingtaxrate>(e.Row);
+            e.Cache.SetDefaultExt<APTranExt.usrWtaxDesc>(e.Row);
+        }
+
+        protected void _(Events.FieldUpdated<APTran, APTranExt.usrWholdingtaxrate> e)
+        {
+            APTran aPTran = e.Row;
+            if (aPTran != null)
+            {
+                APTranExt aPTranExt = aPTran.GetExtension<APTranExt>();
+                if (aPTranExt != null)
                 {
-                    var rowExt = PXCache<APTran>.GetExtension<APTranExt>(atc);
-                    if (rowExt.UsrWholdingtaxrate == "N/A" || rowExt.UsrWholdingatc == null)
-                    {
-                        PXCache xcache = Base.Transactions.Cache;
-                        xcache.SetValue<APTranExt.usrWholdingatc>(atc, "N/A");
-                        xcache.SetValue<APTranExt.usrWholdingtaxrate>(atc, "0.00");
-                        xcache.SetValue<APTranExt.usrWholdingtaxAmount>(atc, "0.00");
-                        xcache.SetValue<APTranExt.usrWtaxDesc>(atc, "N/A");
-                    }
-            }   
-              baseMethod();
+                    var curyCuryLineAmount = aPTran.CuryLineAmt;
+                    var conCuryLineAmount = Convert.ToDecimal(curyCuryLineAmount);
+                    var taxRate = aPTranExt.UsrWholdingtaxrate;
+                    var conTaxRate = Convert.ToDecimal(taxRate);
+                    var totalAmount = conCuryLineAmount * conTaxRate;
+                    var roundOffTotal = Math.Round(totalAmount, 2, MidpointRounding.AwayFromZero);
+                    var stringAmount = Convert.ToString(roundOffTotal);
+                    e.Cache.SetValue<APTranExt.usrWholdingtaxAmount>(aPTran, stringAmount);
+                }
+            }
+        }
+
+        protected void _(Events.FieldUpdated<APTran, APTran.curyLineAmt> e)
+        {
+            APTran aPTran = e.Row;
+            if (aPTran != null)
+            {
+                APTranExt aPTranExt = aPTran.GetExtension<APTranExt>();
+                if (aPTranExt != null)
+                {
+                    var curyCuryLineAmount = aPTran.CuryLineAmt;
+                    var conCuryLineAmount = Convert.ToDecimal(curyCuryLineAmount);
+                    var taxRate = aPTranExt.UsrWholdingtaxrate;
+                    var conTaxRate = Convert.ToDecimal(taxRate);
+                    var totalAmount = conCuryLineAmount * conTaxRate;
+                    var roundOffTotal = Math.Round(totalAmount, 2, MidpointRounding.AwayFromZero);
+                    var stringAmount = Convert.ToString(roundOffTotal);
+                    e.Cache.SetValue<APTranExt.usrWholdingtaxAmount>(aPTran, stringAmount);
+                }
+            }
         }
         #endregion
     }
-    
 }

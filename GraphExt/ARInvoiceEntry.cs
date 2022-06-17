@@ -52,109 +52,38 @@ namespace CloudianGlobal
                 _globalvalue = value;
             }
         }
-      
     }
     // Acuminator disable once PX1016 ExtensionDoesNotDeclareIsActiveMethod extension should be constantly active
     public class ARInvoiceEntry_Extension : PXGraphExtension<ARInvoiceEntry>
     {
-        #region Event Handlers
 
-        protected void _(Events.RowSelected<ARTran> e)
-        {
-            var doc = Base.Document.Current;
-            ARTran row = e.Row as ARTran;
-            PXUIFieldAttribute.SetEnabled<ARTranExt.usrATC>(e.Cache, e.Row, true);
-        }
-
-    
-
-        protected void ARInvoice_RowSelected(PXCache cache, PXRowSelectedEventArgs e)
-        {
-
-            var row = (ARInvoice)e.Row;
-            PXUIFieldAttribute.SetEnabled<ARRegisterExt.usrCounterDate>(cache, e.Row, true);
-
-            foreach (ARInvoice rows in Base.Document.Cache.Cached)
-            {
-                PXCache cache1 = Base.Document.Cache;
-
-                var rowsExt = PXCache<ARRegister>.GetExtension<ARRegisterExt>(rows);
-                var getnoo = rowsExt.UsrInvoicenoooo;
-                var gettype = rowsExt.UsrInvoiceType;
-                var finalnobr = rowsExt.Usrfinalinvoiceno;
-                if (getnoo != null && gettype != null)
-                {
-                    var finalval = gettype + getnoo;
-                    cache1.SetValue<ARRegisterExt.usrfinalinvoiceno>(rows, finalval);
-
-                }
-                if (finalnobr == null)
-                {
-                    cache1.SetValue<ARRegisterExt.usrfinalinvoiceno>(rows, " <NEW>");
-                }
-                if (finalnobr == " <NEW>" || finalnobr == null)
-                {
-                    PXUIFieldAttribute.SetEnabled<ARRegisterExt.usrInvoiceType>(cache, e.Row, true);
-                }
-                else
-                {
-                    PXUIFieldAttribute.SetEnabled<ARRegisterExt.usrInvoiceType>(cache, e.Row, false);
-                }
-            }
-        }
-
-        protected void ARInvoice_UsrCounterDate_FieldUpdated(PXCache cache, PXFieldUpdatedEventArgs e)
-        {
-            var row = (ARInvoice)e.Row;
-           
-            var Rowext = PXCache<ARRegister>.GetExtension<ARRegisterExt>(row);
-            var addplus = row.TermsID;
-            if (addplus == null)
-            {
-            }
-            else
-            {
-            Terms termsdays = PXSelect<Terms, Where<Terms.termsID, Equal<Required<Terms.termsID>>>>.Select(Base, addplus);
-            var dayinterms = termsdays.DayDue00;
-
-                DateTime date1 = Convert.ToDateTime(Rowext.UsrCounterDate);
-                Int64 date2 = Convert.ToInt64(dayinterms);
-                DateTime enddate = date1.AddDays(date2);
-                
-            cache.SetValue<ARInvoice.dueDate>(row, enddate);
-            }
-        }
-
-        #region Extended initialization
-        public override void Initialize()
-        {
-            base.Initialize();
-        }
-        #endregion
-
-        public PXAction<ARInvoice> WithHoldingTax;
+        public PXAction<ARInvoice> WithholdingTax;
         [PXButton]
-        [PXUIField(DisplayName = "WithHoldingTax")]
-        protected void withHoldingTax()
+        [PXUIField(DisplayName = "Withholding Tax")]
+        protected void withholdingTax()
         {
             var Intid = 0;
             InventoryItem wtax = PXSelect<InventoryItem, Where<InventoryItem.inventoryCD, 
                 Equal<Required<InventoryItem.inventoryCD>>>>.Select(Base, "WTAX");
 
             if (wtax != null)
-            {
                 Intid = Convert.ToInt32(wtax.InventoryID);
-            }
 
             PXCache cache1 = Base.Document.Cache;
             PXCache cache2 = Base.Transactions.Cache;
             PXCache cache3 = Base.Adjustments_1.Cache;
-            var refnum = "";
+            var status = Base.Document.Current;
+            //var refnum = "";
             var totalwhol = 0.00;
+
+            foreach (ARTran wTaxExist in Base.Transactions.Select())
+            {
+                if (wTaxExist.InventoryID == Intid)
+                    return;
+            }
 
             foreach (ARInvoice row in Base.Document.Cache.Cached)
             {
-                refnum = row.RefNbr;
                 if (row.DocType == "CRM")
                 {
                     foreach (ARTran rowss in Base.Transactions.Cache.Cached)
@@ -165,27 +94,17 @@ namespace CloudianGlobal
                         cache.Delete(rowss);
 
                     }
-                    cache1.SetValue<ARInvoice.docDesc>(row, "WithHolding Tax");
+                    cache1.SetValue<ARInvoice.docDesc>(row, "Withholding Tax");
                     ARTran red = new ARTran();
                     red.InventoryID = Intid;
                     red.CuryExtPrice = Convert.ToInt32(totalwhol);
                     cache2.Insert(red);
 
-                    foreach (ARAdjust rowsss in Base.Adjustments_1.Cache.Cached)
-                    {
-                        
-                       
-                        PXCache cache = Base.Adjustments_1.Cache;
-                        cache.Delete(rowsss);
-
-                    }
 
                     ARAdjust red1 = new ARAdjust();
-                    red1.AdjdRefNbr = Globalvar.GlobalValue;
+                    red1.AdjdRefNbr = row.OrigRefNbr;
                     red1.CuryAdjgAmt = Convert.ToInt32(totalwhol);
                     cache3.Insert(red1);
-
-                   
                 }
                 else if (row.Released == false)
                 {
@@ -193,203 +112,239 @@ namespace CloudianGlobal
                     throw new PXException("Release and Reverse Before Applying WithHolding Tax");
                 }
             }
-            cache3.SetValue<ARAdjust.curyAdjdAmt>(cache3, Convert.ToInt32(totalwhol));
         }
-
-        public delegate void PersistDelegate();
-        [PXOverride]
-        public void Persist(PersistDelegate baseMethod)
-        {
-            foreach (ARTran row in Base.Transactions.Cache.Cached)
-            {
-                var rowExt = PXCache<ARTran>.GetExtension<ARTranExt>(row);
-                if (rowExt.UsrDescription == null)
-                {
-                    PXCache cache = Base.Transactions.Cache;
-
-                    cache.SetValue<ARTranExt.usrDescription>(row, "0.00");
-
-                }
-                if (rowExt.UsrATC == null)
-                {
-                    PXCache cache = Base.Transactions.Cache;
-
-                    cache.SetValue<ARTranExt.usrATC>(row, "N/A");
-                }
-            }
-            //baseMethod();
-            foreach (ARInvoice docu in Base.Document.Cache.Cached)
-            {
-                PXCache cache = Base.Document.Cache;
-                Globalvar.GlobalValue = docu.RefNbr;
-            }
-            var ini = 0;
-            var final = 0;
-            var lastnum = 0;
-
-            ARInvoice rows = Base.Document.Current;
-            PXCache cache1 = Base.Document.Cache;
-            var newew = rows.RefNbr;
-            var rowsExt = PXCache<ARRegister>.GetExtension<ARRegisterExt>(rows);
-            var cunbr = rowsExt.UsrInvoicenoooo;
-            if(rows.DocType == "INV")
-            {
-
-                if (newew == " <NEW>" || cunbr == null)
-                {
-                    var gettypes = rowsExt.UsrInvoiceType;
-                    if (gettypes == null)
-                    {
-                        baseMethod();
-                        return;
-                    }
-                    else if (gettypes == "SI")
-                    {
-                        ARRegister ress = PXSelect<ARRegister, Where<ARRegisterExt.usrInvoiceType, Equal<Required<ARRegisterExt.usrInvoiceType>>,
-                            And<ARRegisterExt.usrInvoicenoooo, IsNotNull,
-                            And<ARRegister.branchID, Equal<Required<ARRegister.branchID>>>>>,
-                            OrderBy<Desc<ARRegister.createdDateTime>>>.Select(Base, "SI", rows.BranchID);
-
-                        if (ress != null)
-                        {
-                            var ressext = PXCache<ARRegister>.GetExtension<ARRegisterExt>(ress);
-
-                            if (ressext.UsrInvoicenoooo == null)
-                            {
-                                lastnum = 0;
-                            }
-                            else
-                            {
-                                if (Convert.ToInt32(ressext.UsrInvoicenoooo) == lastnum)
-                                {
-                                    ini = Convert.ToInt32(ressext.UsrInvoicenoooo);
-                                    lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
-
-                                }
-                                else if (Convert.ToInt32(ressext.UsrInvoicenoooo) > lastnum)
-                                {
-                                    lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
-
-                                }
-
-                            }
-                        }
-
-                    }
-                    else if (gettypes == "BI")
-                    {
-                        ARRegister ress = PXSelect<ARRegister, Where<ARRegisterExt.usrInvoiceType, Equal<Required<ARRegisterExt.usrInvoiceType>>,
-                            And<ARRegisterExt.usrInvoicenoooo, IsNotNull,
-                            And<ARRegister.branchID, Equal<Required<ARRegister.branchID>>>>>,
-                            OrderBy<Desc<ARRegister.createdDateTime>>>.Select(Base, "BI", rows.BranchID);
-
-                        if (ress != null)
-                        {
-                            var ressext = PXCache<ARRegister>.GetExtension<ARRegisterExt>(ress);
-
-                            if (ressext.UsrInvoicenoooo == null)
-                            {
-                                lastnum = 0;
-                            }
-                            else
-                            {
-                                if (Convert.ToInt32(ressext.UsrInvoicenoooo) == lastnum)
-                                {
-                                    ini = Convert.ToInt32(ressext.UsrInvoicenoooo);
-                                    lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
-
-                                }
-                                else if (Convert.ToInt32(ressext.UsrInvoicenoooo) > lastnum)
-                                {
-                                    lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
-
-                                }
-
-                            }
-                        }
-                    }
-                    else if (gettypes == "NI")
-                    {
-                        ARRegister ress = PXSelect<ARRegister, Where<ARRegisterExt.usrInvoiceType, Equal<Required<ARRegisterExt.usrInvoiceType>>,
-                            And<ARRegisterExt.usrInvoicenoooo, IsNotNull,
-                            And<ARRegister.branchID, Equal<Required<ARRegister.branchID>>>>>,
-                            OrderBy<Desc<ARRegister.createdDateTime>>>.Select(Base, "NI", rows.BranchID);
-
-                        if (ress != null)
-                        {
-                            var ressext = PXCache<ARRegister>.GetExtension<ARRegisterExt>(ress);
-
-                            if (ressext.UsrInvoicenoooo == null)
-                            {
-                                lastnum = 0;
-                            }
-                            else
-                            {
-                                if (Convert.ToInt32(ressext.UsrInvoicenoooo) == lastnum)
-                                {
-                                    ini = Convert.ToInt32(ressext.UsrInvoicenoooo);
-                                    lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
-
-                                }
-                                else if (Convert.ToInt32(ressext.UsrInvoicenoooo) > lastnum)
-                                {
-                                    lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
-
-                                }
-
-                            }
-                        }
-                    }
-                    cache1.SetValueExt<ARRegisterExt.usrInvoicenoooo>(rows, Convert.ToString(Convert.ToInt32(lastnum) + 1));
-                    lastnum = 0;
-                }
-            }
-            else
-            {
-               // cache1.SetValueExt<ARRegisterExt.usrInvoiceType>(rows, null);
-                cache1.SetValueExt<ARRegisterExt.usrfinalinvoiceno>(rows, null);
-            }
-            foreach (ARInvoice rowss in Base.Document.Cache.Cached)
-            {
-                var rowssExt = PXCache<ARRegister>.GetExtension<ARRegisterExt>(rowss);
-                if (rowssExt.UsrInvoiceType == null && rowss.Status == "B")
-                {
-                    // Acuminator disable once PX1050 HardcodedStringInLocalizationMethod [Justification]
-                    throw new PXException("Invoice Type Cannot Be null");
-
-                }
-                else
-                {
-                    baseMethod();
-                }
-            }
-        }  
 
         public delegate IEnumerable ReleaseDelegate(PXAdapter adapter);
         [PXOverride]
         public IEnumerable Release(PXAdapter adapter, ReleaseDelegate baseMethod)
         {
-            foreach (ARTran row in Base.Transactions.Cache.Cached)
+            string errorSaving = "Error on saving WTAX line click WTAX button";
+
+            foreach(ARInvoice aRInvoice in Base.Document.Cache.Cached)
             {
-                var rowExt = PXCache<ARTran>.GetExtension<ARTranExt>(row);
-                if (rowExt.UsrDescription == null)
+                if (aRInvoice != null)
                 {
-                    PXCache cache = Base.Transactions.Cache;
+                    if (aRInvoice.DocType == "CRM")
+                    {
+                        foreach (ARTran aRTran in Base.Transactions.Cache.Cached)
+                        {    
+                            ARTranExt aRTranExt = aRTran.GetExtension<ARTranExt>();
+                            if (aRTranExt.UsrATC != "N/A")
+                            {
+                                throw new PXException(errorSaving);
+                            }
+                                    
+                        }
+                    }
 
-                    cache.SetValue<ARTranExt.usrDescription>(row, "0.00");
-
-                }
-                if (rowExt.UsrATC == null)
-                {
-                    PXCache cache = Base.Transactions.Cache;
-
-                    cache.SetValue<ARTranExt.usrATC>(row, "N/A");
                 }
             }
+           
             return baseMethod(adapter);
         }
 
-        protected void ARTran_UsrDescription_FieldUpdated(PXCache cache, PXFieldUpdatedEventArgs e)
+
+        #region Event Handlers
+        protected void _(Events.RowSelected<ARInvoice> e)
+        {
+            var row = e.Row;
+            PXUIFieldAttribute.SetEnabled<ARRegisterExt.usrCounterDate>(e.Cache, e.Row, true);
+
+            foreach (ARInvoice aRInvoice in Base.Document.Cache.Cached)
+            {
+                ARRegisterExt aRRegisterExt = aRInvoice.GetExtension<ARRegisterExt>();
+                var getInvoicenoooo = aRRegisterExt.UsrInvoicenoooo;
+                var getType = aRRegisterExt.UsrInvoiceType;
+                var getFinalInvoiceno = aRRegisterExt.Usrfinalinvoiceno;
+                if (getInvoicenoooo != null && getType != null)
+                {
+                    var finalValue = getType + getInvoicenoooo;
+                    aRRegisterExt.Usrfinalinvoiceno = finalValue;
+                }
+                if (getFinalInvoiceno == null)
+                    aRRegisterExt.Usrfinalinvoiceno = " <NEW>";
+
+                if (getFinalInvoiceno == " <NEW>" || getFinalInvoiceno == null)
+                    PXUIFieldAttribute.SetEnabled<ARRegisterExt.usrInvoiceType>(e.Cache, e.Row, true);
+                else
+                    PXUIFieldAttribute.SetEnabled<ARRegisterExt.usrInvoiceType>(e.Cache, e.Row, false);
+            }
+                
+            if (row.DocType == "INV")
+                WithholdingTax.SetEnabled(false);
+            else if (row.DocType == "CRM" && row.Status == "H")
+                WithholdingTax.SetEnabled(true);
+
+            if (row.Released == true)
+                WithholdingTax.SetEnabled(false);
+
+            if (row.Status == "B")
+                WithholdingTax.SetEnabled(false);
+        }
+
+        protected void _(Events.RowSelected<ARTran> e)
+        {
+            var doc = Base.Document.Current;
+            ARTran row = e.Row as ARTran;
+            PXUIFieldAttribute.SetEnabled<ARTranExt.usrATC>(e.Cache, e.Row, true);
+        }
+
+
+        protected void _(Events.FieldUpdated<ARInvoice, ARRegisterExt.usrCounterDate> e)
+        {
+            var row = e.Row;
+            ARRegisterExt aRRegisterExt = row.GetExtension<ARRegisterExt>();
+            var termsID = row.TermsID;
+            if (termsID != null)
+            {
+                Terms terms = SelectFrom<Terms>.Where<Terms.termsID.
+                    IsEqual<@P.AsString>>.View.Select(Base, termsID);
+
+                var dayTerms = terms.DayDue00;
+
+                DateTime counterDate = Convert.ToDateTime(aRRegisterExt.UsrCounterDate);
+                Int64 termsDay = Convert.ToInt64(dayTerms);
+                DateTime dueDate = counterDate.AddDays(termsDay);
+
+                e.Cache.SetValue<ARInvoice.dueDate>(row, dueDate);
+            }
+        }
+
+
+
+
+        protected void _(Events.RowPersisting<ARInvoice> e)
+        {
+            var row = e.Row;
+
+            var ini = 0;
+            var final = 0;
+            var lastnum = 0;
+
+            if (row != null)
+            {
+                foreach (ARInvoice docu in Base.Document.Cache.Cached)
+                {
+                    PXCache cache = Base.Document.Cache;
+                    Globalvar.GlobalValue = docu.RefNbr;
+                }
+                PXCache cache1 = Base.Document.Cache;
+                var newew = row.RefNbr;
+                ARRegisterExt aRRegisterExt = row.GetExtension<ARRegisterExt>();
+                var cunbr = aRRegisterExt.UsrInvoicenoooo;
+
+                if (row.DocType == "INV")
+                {
+                    if (newew == " <NEW>" || cunbr == null)
+                    {
+                        var gettypes = aRRegisterExt.UsrInvoiceType;
+                        if (gettypes == null)
+                            return;
+                        else if (gettypes == "SI")
+                        {
+                            ARRegister ress = PXSelect<ARRegister, Where<ARRegisterExt.usrInvoiceType, Equal<Required<ARRegisterExt.usrInvoiceType>>,
+                                And<ARRegisterExt.usrInvoicenoooo, IsNotNull,
+                                And<ARRegister.branchID, Equal<Required<ARRegister.branchID>>>>>,
+                                OrderBy<Desc<ARRegister.createdDateTime>>>.Select(Base, "SI", row.BranchID);
+                            if (ress != null)
+                            {
+                                var ressext = PXCache<ARRegister>.GetExtension<ARRegisterExt>(ress);
+
+                                if (ressext.UsrInvoicenoooo == null)
+                                {
+                                    lastnum = 0;
+                                }
+                                else
+                                {
+                                    if (Convert.ToInt32(ressext.UsrInvoicenoooo) == lastnum)
+                                    {
+                                        ini = Convert.ToInt32(ressext.UsrInvoicenoooo);
+                                        lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
+
+                                    }
+                                    else if (Convert.ToInt32(ressext.UsrInvoicenoooo) > lastnum)
+                                    {
+                                        lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
+
+                                    }
+
+                                }
+                            }
+                        }
+                        else if (gettypes == "BI")
+                        {
+                            ARRegister ress = PXSelect<ARRegister, Where<ARRegisterExt.usrInvoiceType, Equal<Required<ARRegisterExt.usrInvoiceType>>,
+                                And<ARRegisterExt.usrInvoicenoooo, IsNotNull,
+                                And<ARRegister.branchID, Equal<Required<ARRegister.branchID>>>>>,
+                                OrderBy<Desc<ARRegister.createdDateTime>>>.Select(Base, "BI", row.BranchID);
+                            if (ress != null)
+                            {
+                                var ressext = PXCache<ARRegister>.GetExtension<ARRegisterExt>(ress);
+
+                                if (ressext.UsrInvoicenoooo == null)
+                                {
+                                    lastnum = 0;
+                                }
+                                else
+                                {
+                                    if (Convert.ToInt32(ressext.UsrInvoicenoooo) == lastnum)
+                                    {
+                                        ini = Convert.ToInt32(ressext.UsrInvoicenoooo);
+                                        lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
+
+                                    }
+                                    else if (Convert.ToInt32(ressext.UsrInvoicenoooo) > lastnum)
+                                    {
+                                        lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
+
+                                    }
+
+                                }
+                            }
+                        }
+                        else if (gettypes == "NI")
+                        {
+                            ARRegister ress = PXSelect<ARRegister, Where<ARRegisterExt.usrInvoiceType, Equal<Required<ARRegisterExt.usrInvoiceType>>,
+                                And<ARRegisterExt.usrInvoicenoooo, IsNotNull,
+                                And<ARRegister.branchID, Equal<Required<ARRegister.branchID>>>>>,
+                                OrderBy<Desc<ARRegister.createdDateTime>>>.Select(Base, "NI", row.BranchID);
+                            if (ress != null)
+                            {
+                                var ressext = PXCache<ARRegister>.GetExtension<ARRegisterExt>(ress);
+
+                                if (ressext.UsrInvoicenoooo == null)
+                                {
+                                    lastnum = 0;
+                                }
+                                else
+                                {
+                                    if (Convert.ToInt32(ressext.UsrInvoicenoooo) == lastnum)
+                                    {
+                                        ini = Convert.ToInt32(ressext.UsrInvoicenoooo);
+                                        lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
+
+                                    }
+                                    else if (Convert.ToInt32(ressext.UsrInvoicenoooo) > lastnum)
+                                    {
+                                        lastnum = Convert.ToInt32(ressext.UsrInvoicenoooo);
+
+                                    }
+
+                                }
+                            }
+
+                        }
+                        cache1.SetValueExt<ARRegisterExt.usrInvoicenoooo>(row, Convert.ToString(Convert.ToInt32(lastnum) + 1));
+                        lastnum = 0;
+                    }
+                }
+                else
+                    cache1.SetValueExt<ARRegisterExt.usrfinalinvoiceno>(row, null); 
+            }
+
+        }
+
+        protected void _(Events.FieldUpdated<ARTran, ARTranExt.usrDescription> e)
         {
             ARTran tram = e.Row as ARTran;
             if (tram != null)
@@ -403,10 +358,9 @@ namespace CloudianGlobal
                     var contaxrate = Convert.ToDecimal(taxrate);
                     var red = concuryam * contaxrate;
                     var redx = Convert.ToString(red);
-                    cache.SetValue<ARTranExt.usrTaxAmount>(tram, redx);
+                    e.Cache.SetValue<ARTranExt.usrTaxAmount>(tram, redx);
                 }
             }
-            var row = (ARTran)e.Row;
         }
 
         protected void ARTran_UsrATC_FieldUpdated(PXCache cache, PXFieldUpdatedEventArgs e)
@@ -415,7 +369,7 @@ namespace CloudianGlobal
                 var row = (ARTran)e.Row;
         }
 
-        protected void ARTran_CuryExtPrice_FieldUpdated(PXCache cache, PXFieldUpdatedEventArgs e)
+        protected void _(Events.FieldUpdated<ARTran, ARTran.curyExtPrice> e)
         {
             ARTran tram = e.Row as ARTran;
             if (tram != null)
@@ -429,11 +383,9 @@ namespace CloudianGlobal
                     var contaxrate = Convert.ToDecimal(taxrate);
                     var red = concuryam * contaxrate;
                     var redx = Convert.ToString(red);
-                    cache.SetValue<ARTranExt.usrTaxAmount>(tram, redx);
+                    e.Cache.SetValue<ARTranExt.usrTaxAmount>(tram, redx);
                 }
-            }
-            var row = (ARTran)e.Row;
-       
+            }      
         }
         #endregion
     }

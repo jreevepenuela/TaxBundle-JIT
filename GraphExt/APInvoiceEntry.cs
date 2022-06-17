@@ -184,7 +184,7 @@ namespace CloudianGlobal
             {
                 InventoryItem item = PXSelectorAttribute.Select<APTran.inventoryID>(e.Cache, row) as InventoryItem;
                 InventoryItemExt itemExt = item.GetExtension<InventoryItemExt>();
-                APTranExt aPTranExt = row.GetExtension<APTranExt>(); ;
+                APTranExt aPTranExt = row.GetExtension<APTranExt>();
                 aPTranExt.UsrWholdingatc = itemExt.UsrWHoldingtax;
             }
             e.Cache.SetDefaultExt<APTranExt.usrWholdingtaxrate>(e.Row);
@@ -251,6 +251,6 @@ namespace CloudianGlobal
                 }
             }
         }
+        #endregion
     }
-    #endregion
 }

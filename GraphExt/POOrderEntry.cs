@@ -28,9 +28,10 @@ using PX.Objects.Common.Discount;
 using PX.Objects;
 using PX.Objects.PO;
 
-namespace PX.Objects.PO
+namespace CloudianGlobal
 {
-  public class POOrderEntry_Extension : PXGraphExtension<POOrderEntry>
+    // Acuminator disable once PX1016 ExtensionDoesNotDeclareIsActiveMethod extension should be constantly active
+    public class POOrderEntry_Extension : PXGraphExtension<POOrderEntry>
   {
     #region Event Handlers
 
