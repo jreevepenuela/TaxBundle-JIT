@@ -1,0 +1,5 @@
+﻿<Table TableName="POLine">
+    <Column TableName="POLine" ColumnName="UsrWholdingatc" ColumnType="string" AllowNull="True" MaxLength="10" DecimalPrecision="2" DecimalLength="10" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="POLine" ColumnName="UsrWholdingrate" ColumnType="string" AllowNull="True" MaxLength="10" DecimalPrecision="2" DecimalLength="10" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="POLine" ColumnName="UsrWholdingAmmount" ColumnType="string" AllowNull="True" MaxLength="10" DecimalPrecision="2" DecimalLength="10" IsNewColumn="True" IsUnicode="True" />
+</Table>

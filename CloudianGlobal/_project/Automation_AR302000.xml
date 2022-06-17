@@ -1,0 +1,5 @@
+﻿<Automation screen="AR302000">
+    <Fields ScreenID="AR302000">
+        <Field IsActive="True" FieldName="ADJDATE" DisableCondition="True" ObjectName="PX.OBJECTS.AR.ARPAYMENT" />
+    </Fields>
+</Automation>

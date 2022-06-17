@@ -1,0 +1,6 @@
+﻿<Automation screen="CR301000">
+    <Fields ScreenID="CR301000">
+        <Field IsActive="True" FieldName="CLASSID" RequiredCondition="True" ObjectName="PX.OBJECTS.CR.CONTACT" />
+        <Field IsActive="True" FieldName="OWNERID" RequiredCondition="True" ObjectName="PX.OBJECTS.CR.CONTACT" />
+    </Fields>
+</Automation>

@@ -1,0 +1,7 @@
+﻿<Automation screen="PO301000">
+    <Fields ScreenID="PO301000">
+        <Field IsActive="True" FieldName="CURYLINEAMT" DisableCondition="True" ObjectName="PX.OBJECTS.PO.POLINE" />
+        <Field IsActive="True" FieldName="ORDERDATE" DisableCondition="True" ObjectName="PX.OBJECTS.PO.POORDER" />
+        <Field IsActive="True" DisplayName="Invoice Ref Nbr" FieldName="VENDORREFNBR" ObjectName="PX.OBJECTS.PO.POORDER" />
+    </Fields>
+</Automation>

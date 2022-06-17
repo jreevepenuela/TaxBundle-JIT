@@ -1,0 +1,4 @@
+﻿<Fields ScreenID="AR303000">
+    <Field IsActive="True" FieldName="USRLASTNAME" ObjectName="PX.OBJECTS.AR.CUSTOMER" />
+    <Field IsActive="True" FieldName="USRMIDDLENAME" ObjectName="PX.OBJECTS.AR.CUSTOMER" />
+</Fields>

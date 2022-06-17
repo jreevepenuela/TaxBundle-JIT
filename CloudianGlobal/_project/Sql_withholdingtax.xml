@@ -1,0 +1,13 @@
+﻿<Sql TableName="withholdingtax" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="withholdingtax">
+  <col name="IDNbr" type="Int" />
+  <col name="ATC" type="VarChar(50)" />
+  <col name="TYPE" type="VarChar(50)" nullable="true" />
+  <col name="Description" type="VarChar(MAX)" nullable="true" />
+  <col name="TaxRate" type="VarChar(50)" nullable="true" />
+  <col name="BIR_Form" type="VarChar(50)" nullable="true" />
+  <index name="PK_withholdingtax" clustered="true" primary="true" unique="true">
+    <col name="IDNbr" />
+  </index>
+</table>]]></CDATA>
+</Sql>

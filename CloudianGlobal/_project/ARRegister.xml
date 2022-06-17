@@ -1,0 +1,8 @@
+﻿<Table TableName="ARRegister">
+    <Column TableName="ARRegister" ColumnName="UsrCustomDate" ColumnType="date" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="ARRegister" ColumnName="UsrCounterDate" ColumnType="date" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="ARRegister" ColumnName="UsrInvoiceType" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="ARRegister" ColumnName="UsrInvoiceNbr" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="ARRegister" ColumnName="UsrInvoicenoooo" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="ARRegister" ColumnName="Usrfinalinvoiceno" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+</Table>

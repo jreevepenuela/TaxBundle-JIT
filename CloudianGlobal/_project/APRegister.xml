@@ -1,0 +1,4 @@
+﻿<Table TableName="APRegister">
+    <Column TableName="APRegister" ColumnName="UsrSIDate" ColumnType="date" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="APRegister" ColumnName="UsrWithheld" ColumnType="bool" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+</Table>

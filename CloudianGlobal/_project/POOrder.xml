@@ -1,0 +1,5 @@
+﻿<Table TableName="POOrder">
+    <Column TableName="POOrder" ColumnName="UsrContract" ColumnType="bool" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="POOrder" ColumnName="UsrPORush" ColumnType="bool" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="POOrder" ColumnName="UsrPOName" ColumnType="string" AllowNull="True" MaxLength="225" DecimalPrecision="2" DecimalLength="225" IsNewColumn="True" IsUnicode="True" />
+</Table>

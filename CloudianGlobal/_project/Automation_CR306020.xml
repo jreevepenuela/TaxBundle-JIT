@@ -1,0 +1,5 @@
+﻿<Automation screen="CR306020">
+    <Fields ScreenID="CR306020">
+        <Field IsActive="True" FieldName="CATEGORYID" RequiredCondition="True" ObjectName="PX.OBJECTS.CR.CRACTIVITY" />
+    </Fields>
+</Automation>

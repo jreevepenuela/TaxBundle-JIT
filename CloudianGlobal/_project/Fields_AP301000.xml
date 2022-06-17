@@ -1,0 +1,5 @@
+﻿<Fields ScreenID="AP301000">
+    <Field IsActive="True" FieldName="DOCDATE" ObjectName="PX.OBJECTS.AP.APINVOICE" />
+    <Field IsActive="True" FieldName="CURYLINEAMT" DisableCondition="True" ObjectName="PX.OBJECTS.AP.APTRAN" />
+    <Field IsActive="True" FieldName="USRWHOLDINGTAXRATE" RequiredCondition="False" ObjectName="PX.OBJECTS.AP.APTRAN" />
+</Fields>

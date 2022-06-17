@@ -1,0 +1,5 @@
+﻿<Automation screen="SO302000">
+    <Fields ScreenID="SO302000">
+        <Field IsActive="True" FieldName="USRSHIPMENTTYPEE" RequiredCondition="False" ObjectName="PX.OBJECTS.SO.SOSHIPMENT" />
+    </Fields>
+</Automation>

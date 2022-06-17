@@ -1,0 +1,3 @@
+﻿<AutomationScreenCondition ConditionID="1da62d9e-15b8-42bf-b620-66f8a0348af2" ScreenID="AR301000" ConditionName="IfIsNull" Order="1" AppendSystemCondition="False" JoinMethod="AND" InvertCondition="False">
+    <FilterRow LineNbr="1" CloseBrackets="0" OpenBrackets="0" FieldName="UsrInvoiceType" Condition="1" Operator="0" Value2="" Value="=Null" IsActive="True" IsFromScheme="False" />
+</AutomationScreenCondition>

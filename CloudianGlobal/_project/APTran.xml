@@ -1,0 +1,8 @@
+﻿<Table TableName="APTran">
+    <Column TableName="APTran" ColumnName="UsrWholdingatc" ColumnType="string" AllowNull="True" MaxLength="10" DecimalPrecision="2" DecimalLength="10" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="APTran" ColumnName="UsrWholdingtaxrate" ColumnType="string" AllowNull="True" MaxLength="5" DecimalPrecision="2" DecimalLength="5" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="APTran" ColumnName="UsrWholdingtaxAmount" ColumnType="string" AllowNull="True" MaxLength="10" DecimalPrecision="2" DecimalLength="10" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="APTran" ColumnName="UsrWtaxdescription" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="APTran" ColumnName="UsrWtaxDesc" ColumnType="string" AllowNull="True" MaxLength="3000" DecimalPrecision="2" DecimalLength="3000" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="APTran" ColumnName="UsrFixedAsset" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+</Table>

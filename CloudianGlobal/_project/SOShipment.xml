@@ -1,0 +1,9 @@
+﻿<Table TableName="SOShipment">
+    <Column TableName="SOShipment" ColumnName="UsrShipmentType" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="SOShipment" ColumnName="UsrShipmentNo" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="SOShipment" ColumnName="UsrDeliveryDate" ColumnType="date" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="SOShipment" ColumnName="UsrDeliveredBy" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="SOShipment" ColumnName="UsrReceivedBy" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="SOShipment" ColumnName="UsrTruckNo" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="SOShipment" ColumnName="UsrShipmentTypess" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+</Table>

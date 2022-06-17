@@ -1,0 +1,5 @@
+﻿<Automation screen="IN304000">
+    <Fields ScreenID="IN304000">
+        <Field IsActive="True" FieldName="REASONCODE" RequiredCondition="True" ObjectName="PX.OBJECTS.IN.INTRAN" />
+    </Fields>
+</Automation>

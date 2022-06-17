@@ -1,0 +1,5 @@
+﻿<Table TableName="INRegister">
+    <Column TableName="INRegister" ColumnName="UsrWB" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="INRegister" ColumnName="UsrRB" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="INRegister" ColumnName="UsrRD" ColumnType="date" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+</Table>

@@ -1,0 +1,5 @@
+﻿<Table TableName="POReceipt">
+    <Column TableName="POReceipt" ColumnName="UsrImportEntry" ColumnType="string" AllowNull="True" MaxLength="15" DecimalPrecision="2" DecimalLength="15" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="POReceipt" ColumnName="UsrAssess" ColumnType="date" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="POReceipt" ColumnName="UsrAssesmentDate" ColumnType="date" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+</Table>

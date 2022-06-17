@@ -1,0 +1,6 @@
+﻿<Automation screen="SO303000">
+    <Fields ScreenID="SO303000">
+        <Field IsActive="True" FieldName="USRFINALINVOICENO" DisableCondition="True" ObjectName="PX.OBJECTS.AR.ARINVOICE" />
+        <Field IsActive="True" FieldName="USRINVOICENOOOO" ObjectName="PX.OBJECTS.AR.ARINVOICE" />
+    </Fields>
+</Automation>

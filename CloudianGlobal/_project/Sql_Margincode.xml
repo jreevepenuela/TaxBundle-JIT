@@ -1,0 +1,19 @@
+﻿<Sql TableName="Margincode" TableSchemaXml="#CDATA">
+    <CDATA name="TableSchemaXml"><![CDATA[<table name="Margincode">
+  <col name="CompanyID" type="Int" default="Zero" />
+  <col name="IDNbr" type="Int" identity="true" />
+  <col name="Code" type="VarChar(250)" nullable="true" />
+  <col name="Mark_up" type="VarChar(250)" nullable="true" />
+  <col name="Commission" type="VarChar(250)" nullable="true" />
+  <col name="Type" type="VarChar(250)" nullable="true" />
+  <col name="Remarks_from_FTC" type="VarChar(250)" nullable="true" />
+  <col name="Checkbox" type="Bit" nullable="true" />
+  <col name="FabType" type="VarChar(250)" nullable="true" />
+  <col name="CreditTerms" type="VarChar(250)" nullable="true" />
+  <col name="Show" type="Bit" nullable="true" />
+  <index name="PK_Margincode" clustered="true" primary="true" unique="true">
+    <col name="CompanyID" />
+    <col name="IDNbr" />
+  </index>
+</table>]]></CDATA>
+</Sql>

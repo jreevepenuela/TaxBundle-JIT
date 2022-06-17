@@ -1,0 +1,5 @@
+﻿<Fields ScreenID="AR301000">
+    <Field IsActive="True" FieldName="DOCDATE" ObjectName="PX.OBJECTS.AR.ARINVOICE" />
+    <Field IsActive="True" FieldName="CURYEXTPRICE" DisableCondition="True" ObjectName="PX.OBJECTS.AR.ARTRAN" />
+    <Field IsActive="True" DisplayName="Invoice Type" FieldName="UsrInvoiceType" RequiredCondition="1da62d9e-15b8-42bf-b620-66f8a0348af2" ObjectName="PX.Objects.AR.ARInvoice" />
+</Fields>

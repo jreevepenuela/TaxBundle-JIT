@@ -1,0 +1,8 @@
+﻿<Table TableName="ARTran">
+    <Column TableName="ARTran" ColumnName="UsrATC" ColumnType="string" AllowNull="True" MaxLength="10" DecimalPrecision="2" DecimalLength="10" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="ARTran" ColumnName="UsrDescription" ColumnType="string" AllowNull="True" MaxLength="100" DecimalPrecision="2" DecimalLength="100" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="ARTran" ColumnName="UsrTaxAmount" ColumnType="string" AllowNull="True" MaxLength="10" DecimalPrecision="2" DecimalLength="10" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="ARTran" ColumnName="UsrAmtPrint" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="ARTran" ColumnName="UsrUOMPrint" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+    <Column TableName="ARTran" ColumnName="UsrQtyPrint" ColumnType="string" AllowNull="True" MaxLength="25" DecimalPrecision="2" IsNewColumn="True" IsUnicode="True" />
+</Table>
