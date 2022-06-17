@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PX.Objects.IN;
+using PX.Objects.AR;
 
 namespace CloudianGlobal
 {
@@ -12,7 +14,8 @@ namespace CloudianGlobal
     {
         #region UsrATC
         [PXDBString(10)]
-        [PXUIField(DisplayName = "WTax Code")]
+        [PXUIField(DisplayName = "Withhodlding Tax Code")]
+        [PXDefault(TypeCode.String, "N/A", typeof(Search<InventoryItemExt.usrWHoldingtax, Where<InventoryItem.inventoryID, Equal<Current<ARTran.inventoryID>>>>), PersistingCheck = PXPersistingCheck.Nothing)]
         [PXSelector(
         typeof(Search<withholdingtax.atc>),
             typeof(withholdingtax.description),
@@ -23,16 +26,16 @@ namespace CloudianGlobal
 
         #region UsrDescription
         [PXDBString(100)]
-        [PXUIField(DisplayName = "WTax Rate")]
-        [PXDefault(typeof(Search<withholdingtax.taxRate, Where<withholdingtax.atc, Equal<Current<ARTranExt.usrATC>>>>), PersistingCheck = PXPersistingCheck.Nothing)]
+        [PXUIField(DisplayName = "Withholding Tax Rate", IsReadOnly = true)]
+        [PXDefault(TypeCode.String, "0.00", typeof(Search<withholdingtax.taxRate, Where<withholdingtax.atc, Equal<Current<ARTranExt.usrATC>>>>), PersistingCheck = PXPersistingCheck.Nothing)]
         public  string UsrDescription { get; set; }
         public abstract class usrDescription : PX.Data.BQL.BqlString.Field<usrDescription> { }
         #endregion
 
         #region UsrTaxAmount
         [PXDBString(10)]
-        [PXUIField(DisplayName = "WTax Amount")]
-
+        [PXUIField(DisplayName = "Withholding Tax Amount", IsReadOnly = true)]
+        [PXDefault(TypeCode.String, "0.00", PersistingCheck = PXPersistingCheck.Nothing)]
         public string UsrTaxAmount { get; set; }
         public abstract class usrTaxAmount : PX.Data.BQL.BqlString.Field<usrTaxAmount> { }
         #endregion

@@ -27,7 +27,7 @@ namespace CloudianGlobal
 
         #region UsrWtaxDesc
         [PXDBString(3000)]
-        [PXUIField(DisplayName = "Withholding Tax Description")]
+        [PXUIField(DisplayName = "Withholding Tax Description", IsReadOnly = true)]
         [PXDefault(TypeCode.String, "N/A", typeof(Search<withholdingtax.description, Where<withholdingtax.atc, Equal<Current<APTranExt.usrWholdingatc>>>>), PersistingCheck = PXPersistingCheck.Nothing)]
         public string UsrWtaxDesc { get; set; }
         public abstract class usrWtaxDesc : PX.Data.BQL.BqlString.Field<usrWtaxDesc> { }
@@ -35,7 +35,7 @@ namespace CloudianGlobal
 
         #region UsrWholdingtaxrate
         [PXDBString(5)]
-        [PXUIField(DisplayName = "Withholding Tax Rate")]
+        [PXUIField(DisplayName = "Withholding Tax Rate", IsReadOnly = true)]
         [PXDefault(TypeCode.String, "0.00", typeof(Search<withholdingtax.taxRate, Where<withholdingtax.atc, Equal<Current<APTranExt.usrWholdingatc>>>>), PersistingCheck = PXPersistingCheck.Nothing)]
         public string UsrWholdingtaxrate { get; set; }
         public abstract class usrWholdingtaxrate : PX.Data.BQL.BqlString.Field<usrWholdingtaxrate> { }
@@ -44,7 +44,7 @@ namespace CloudianGlobal
         #region UsrWholdingtaxAmount
         [PXDBString(10)]
         [PXDefault(TypeCode.String, "0.00", PersistingCheck = PXPersistingCheck.Nothing)]
-        [PXUIField(DisplayName = "Withholding Tax Amount")]
+        [PXUIField(DisplayName = "Withholding Tax Amount", IsReadOnly = true)]
         public string UsrWholdingtaxAmount { get; set; }
         public abstract class usrWholdingtaxAmount : PX.Data.BQL.BqlString.Field<usrWholdingtaxAmount> { }
         #endregion

@@ -45,7 +45,6 @@ namespace CloudianGlobal
         #region Usrfinalinvoiceno
         [PXDBString]
         [PXUIField(DisplayName = "Invoice Nbr", IsReadOnly = true)]
-
         public string Usrfinalinvoiceno { get; set; }
         public abstract class usrfinalinvoiceno : PX.Data.BQL.BqlString.Field<usrfinalinvoiceno> { }
         #endregion
